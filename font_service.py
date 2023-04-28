@@ -75,29 +75,47 @@ def create_font_sheet(
     # 图集底部添加 1 像素边界
     sheet_data.append([color_border for _ in range(len(sheet_data[0]))])
 
-    # 创建 L 输出文件夹
-    output_l_dir = os.path.join(output_dir, 'L')
-    if not os.path.exists(output_l_dir):
-        os.makedirs(output_l_dir)
+    # 创建 grayscale 输出文件夹
+    output_grayscale_dir = os.path.join(output_dir, 'grayscale')
+    if not os.path.exists(output_grayscale_dir):
+        os.makedirs(output_grayscale_dir)
 
-    # 写入 L .png 图集
-    output_l_png_file_path = os.path.join(output_l_dir, f'{output_name}.png')
-    image = png.from_array(sheet_data, 'L')
-    image.save(output_l_png_file_path)
-    logger.info(f'make {output_l_png_file_path}')
+    # 写入 grayscale .png 图集
+    output_grayscale_png_file_path = os.path.join(output_grayscale_dir, f'{output_name}.png')
+    image = png.from_array(sheet_data, 'L;2')
+    image.save(output_grayscale_png_file_path)
+    logger.info(f'make {output_grayscale_png_file_path}')
 
-    # 写入 L .dat 字母表
-    output_l_dat_file_path = os.path.join(output_l_dir, f'{output_name}.png.dat')
-    with open(output_l_dat_file_path, 'w', encoding='utf-8') as file:
+    # 写入 grayscale .dat 字母表
+    output_grayscale_dat_file_path = os.path.join(output_grayscale_dir, f'{output_name}.png.dat')
+    with open(output_grayscale_dat_file_path, 'w', encoding='utf-8') as file:
         file.write(''.join(alphabet))
-    logger.info(f'make {output_l_dat_file_path}')
+    logger.info(f'make {output_grayscale_dat_file_path}')
 
-    # 创建 RGBA 输出文件夹
-    output_rgba_dir = os.path.join(output_dir, 'RGBA')
+    # 创建 palette 输出文件夹
+    output_palette_dir = os.path.join(output_dir, 'palette')
+    if not os.path.exists(output_palette_dir):
+        os.makedirs(output_palette_dir)
+
+    # 写入 palette .png 图集
+    output_palette_png_file_path = os.path.join(output_palette_dir, f'{output_name}.png')
+    palette = [(0, 0, 0), (127, 127, 127), (255, 255, 255)]
+    writer = png.Writer(len(sheet_data[0]), len(sheet_data), palette=palette, bitdepth=2)
+    with open(output_palette_png_file_path, 'wb') as file:
+        writer.write(file, sheet_data)
+
+    # 写入 palette .dat 字母表
+    output_palette_dat_file_path = os.path.join(output_palette_dir, f'{output_name}.png.dat')
+    with open(output_palette_dat_file_path, 'w', encoding='utf-8') as file:
+        file.write(''.join(alphabet))
+    logger.info(f'make {output_palette_dat_file_path}')
+
+    # 创建 rgba 输出文件夹
+    output_rgba_dir = os.path.join(output_dir, 'rgba')
     if not os.path.exists(output_rgba_dir):
         os.makedirs(output_rgba_dir)
 
-    # 写入 RGBA .png 图集
+    # 写入 rgba .png 图集
     output_rgba_png_file_path = os.path.join(output_rgba_dir, f'{output_name}.png')
     output_rgba_bitmap = []
     for sheet_data_row in sheet_data:
@@ -123,7 +141,7 @@ def create_font_sheet(
     image.save(output_rgba_png_file_path)
     logger.info(f'make {output_rgba_png_file_path}')
 
-    # 写入 RGBA .dat 字母表
+    # 写入 rgba .dat 字母表
     output_rgba_dat_file_path = os.path.join(output_rgba_dir, f'{output_name}.png.dat')
     with open(output_rgba_dat_file_path, 'w', encoding='utf-8') as file:
         file.write(''.join(alphabet))
