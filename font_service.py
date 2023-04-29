@@ -18,7 +18,8 @@ def create_font_sheet(
         output_name,
         output_dir,
         font_file_path,
-        rasterize_offset_xy=(0, 0),
+        rasterize_offset_x=0,
+        rasterize_offset_y=0,
         rasterize_adjust_width=0,
         rasterize_adjust_height=0,
 ):
@@ -55,7 +56,7 @@ def create_font_sheet(
 
         # 栅格化
         glyph_image = Image.new('RGBA', (advance_width, line_height), (0, 0, 0, 0))
-        ImageDraw.Draw(glyph_image).text(rasterize_offset_xy, c, fill=(0, 0, 0), font=image_font)
+        ImageDraw.Draw(glyph_image).text((rasterize_offset_x, rasterize_offset_y), c, fill=(0, 0, 0), font=image_font)
         logger.info(f'rasterize char: {code_point} - {c}')
 
         # 二值化字形，合并到图集
@@ -74,23 +75,6 @@ def create_font_sheet(
 
     # 图集底部添加 1 像素边界
     sheet_data.append([color_border for _ in range(len(sheet_data[0]))])
-
-    # 创建 grayscale 输出文件夹
-    output_grayscale_dir = os.path.join(output_dir, 'grayscale')
-    if not os.path.exists(output_grayscale_dir):
-        os.makedirs(output_grayscale_dir)
-
-    # 写入 grayscale .png 图集
-    output_grayscale_png_file_path = os.path.join(output_grayscale_dir, f'{output_name}.png')
-    image = png.from_array(sheet_data, 'L;2')
-    image.save(output_grayscale_png_file_path)
-    logger.info(f'make {output_grayscale_png_file_path}')
-
-    # 写入 grayscale .dat 字母表
-    output_grayscale_dat_file_path = os.path.join(output_grayscale_dir, f'{output_name}.png.dat')
-    with open(output_grayscale_dat_file_path, 'w', encoding='utf-8') as file:
-        file.write(''.join(alphabet))
-    logger.info(f'make {output_grayscale_dat_file_path}')
 
     # 创建 palette 输出文件夹
     output_palette_dir = os.path.join(output_dir, 'palette')

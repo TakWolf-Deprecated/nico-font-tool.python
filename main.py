@@ -29,7 +29,7 @@ def main():
         output_name='fusion-pixel-monospaced',
         output_dir=build_dir,
         font_file_path=os.path.join(fonts_dir, 'fusion-pixel-monospaced', 'fusion-pixel-monospaced.otf'),
-        rasterize_offset_xy=(0, -1),
+        rasterize_offset_y=-1,
         rasterize_adjust_width=-1,
         rasterize_adjust_height=-1,
     )
@@ -38,7 +38,7 @@ def main():
         output_name='fusion-pixel-proportional',
         output_dir=build_dir,
         font_file_path=os.path.join(fonts_dir, 'fusion-pixel-proportional', 'fusion-pixel-proportional.otf'),
-        rasterize_offset_xy=(0, -1),
+        rasterize_offset_y=-1,
         rasterize_adjust_width=-1,
         rasterize_adjust_height=-1,
     )
