@@ -84,7 +84,7 @@ def create_font_sheet(
     # 写入 palette .png 图集
     output_palette_png_file_path = os.path.join(output_palette_dir, f'{output_name}.png')
     palette = [(255, 255, 255), (0, 0, 0), (255, 0, 255)]
-    writer = png.Writer(len(sheet_data[0]), len(sheet_data), palette=palette, bitdepth=2)
+    writer = png.Writer(len(sheet_data[0]), len(sheet_data), palette=palette)
     with open(output_palette_png_file_path, 'wb') as file:
         writer.write(file, sheet_data)
 
