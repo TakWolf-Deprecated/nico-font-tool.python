@@ -8,9 +8,9 @@ from fontTools.ttLib import TTFont
 
 logger = logging.getLogger('font-service')
 
-color_transparent = 0
-color_solid = 1
-color_border = 2
+glyph_data_transparent = 0
+glyph_data_solid = 1
+glyph_data_border = 2
 
 
 def create_font_sheet(
@@ -25,30 +25,28 @@ def create_font_sheet(
 ):
     # 加载字体文件
     font = TTFont(font_file_path)
-    px_units = font['head'].unitsPerEm / font_size
-    hhea = font['hhea']
-    metrics = font['hmtx'].metrics
-    cmap = font.getBestCmap()
     image_font = ImageFont.truetype(font_file_path, font_size)
     logger.info(f'loaded font file: {font_file_path}')
 
-    # 计算行高
-    line_height = math.ceil((hhea.ascent - hhea.descent) / px_units)
+    # 计算字体参数
+    px_units = font['head'].unitsPerEm / font_size
+    line_height = math.ceil((font['hhea'].ascent - font['hhea'].descent) / px_units)
     line_height += glyph_adjust_height
 
     # 图集对象，初始化左边界
-    sheet_data = [[color_border] for _ in range(line_height)]
+    sheet_data = [[glyph_data_border] for _ in range(line_height)]
 
     # 字母表
     alphabet = []
 
     # 遍历字体全部字符
-    for code_point, glyph_name in cmap.items():
+    for code_point, glyph_name in font.getBestCmap().items():
         c = chr(code_point)
         if not c.isprintable():
             continue
 
-        advance_width = math.ceil(metrics[glyph_name][0] / px_units)
+        # 获取字符宽度
+        advance_width = math.ceil(font['hmtx'].metrics[glyph_name][0] / px_units)
         if advance_width <= 0:
             continue
         advance_width += glyph_adjust_width
@@ -65,16 +63,16 @@ def create_font_sheet(
             for x in range(advance_width):
                 alpha = glyph_image.getpixel((x, y))[3]
                 if alpha > 127:
-                    sheet_data[y].append(color_solid)
+                    sheet_data[y].append(glyph_data_solid)
                 else:
-                    sheet_data[y].append(color_transparent)
-            sheet_data[y].append(color_border)
+                    sheet_data[y].append(glyph_data_transparent)
+            sheet_data[y].append(glyph_data_border)
 
         # 添加到字母表
         alphabet.append(c)
 
     # 图集底部添加 1 像素边界
-    sheet_data.append([color_border for _ in range(len(sheet_data[0]))])
+    sheet_data.append([glyph_data_border for _ in range(len(sheet_data[0]))])
 
     # 创建 palette 输出文件夹
     outputs_palette_dir = os.path.join(outputs_dir, 'palette')
@@ -106,12 +104,12 @@ def create_font_sheet(
     for sheet_data_row in sheet_data:
         rgba_bitmap_row = []
         for color in sheet_data_row:
-            if color == color_transparent:
+            if color == glyph_data_transparent:
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
-            elif color == color_solid:
+            elif color == glyph_data_solid:
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
