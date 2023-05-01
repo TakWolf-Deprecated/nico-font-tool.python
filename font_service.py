@@ -52,6 +52,8 @@ def create_font_sheet(
         if advance_width <= 0:
             continue
         advance_width += glyph_adjust_width
+        if advance_width <= 0:
+            continue
 
         # 栅格化
         glyph_image = Image.new('RGBA', (advance_width, line_height), (0, 0, 0, 0))
