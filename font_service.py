@@ -62,14 +62,13 @@ def create_font_sheet(
 
         # 二值化字形，合并到图集
         for y in range(line_height):
-            sheet_data_row = sheet_data[y]
             for x in range(advance_width):
                 alpha = glyph_image.getpixel((x, y))[3]
                 if alpha > 127:
-                    sheet_data_row.append(color_solid)
+                    sheet_data[y].append(color_solid)
                 else:
-                    sheet_data_row.append(color_transparent)
-            sheet_data_row.append(color_border)
+                    sheet_data[y].append(color_transparent)
+            sheet_data[y].append(color_border)
 
         # 添加到字母表
         alphabet.append(c)
