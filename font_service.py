@@ -56,7 +56,7 @@ def create_font_sheet(
         # 栅格化
         glyph_image = Image.new('RGBA', (advance_width, line_height), (0, 0, 0, 0))
         ImageDraw.Draw(glyph_image).text((glyph_offset_x, glyph_offset_y), c, fill=(0, 0, 0), font=image_font)
-        logger.info(f'rasterize char: {code_point} - {c}')
+        logger.info(f'rasterize char: {code_point} - {c} - {glyph_image.width} - {glyph_image.height}')
 
         # 二值化字形，合并到图集
         for y in range(line_height):
