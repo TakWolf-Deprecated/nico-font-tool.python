@@ -88,6 +88,7 @@ def create_font_sheet(
     writer = png.Writer(len(sheet_data[0]), len(sheet_data), palette=palette)
     with open(palette_png_file_path, 'wb') as file:
         writer.write(file, sheet_data)
+    logger.info(f'make {palette_png_file_path}')
 
     # 写入 palette .dat 字母表
     palette_dat_file_path = os.path.join(outputs_palette_dir, f'{outputs_name}.png.dat')
