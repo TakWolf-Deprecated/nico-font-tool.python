@@ -35,6 +35,7 @@ def create_font_sheet(
 
     # 图集对象，初始化左边界
     sheet_data = [[glyph_data_border] for _ in range(line_height)]
+    sheet_width = 1
 
     # 字母表
     alphabet = []
@@ -67,12 +68,13 @@ def create_font_sheet(
                 else:
                     sheet_data[y].append(glyph_data_transparent)
             sheet_data[y].append(glyph_data_border)
+        sheet_width += advance_width + 1
 
         # 添加到字母表
         alphabet.append(c)
 
     # 图集底部添加 1 像素边界
-    sheet_data.append([glyph_data_border for _ in range(len(sheet_data[0]))])
+    sheet_data.append([glyph_data_border for _ in range(sheet_width)])
 
     # 创建 palette 输出文件夹
     outputs_palette_dir = os.path.join(outputs_dir, 'palette')
@@ -82,7 +84,7 @@ def create_font_sheet(
     # 写入 palette .png 图集
     palette_png_file_path = os.path.join(outputs_palette_dir, f'{outputs_name}.png')
     palette = [(255, 255, 255), (0, 0, 0), (255, 0, 255)]
-    writer = png.Writer(len(sheet_data[0]), len(sheet_data), palette=palette)
+    writer = png.Writer(sheet_width, len(sheet_data), palette=palette)
     with open(palette_png_file_path, 'wb') as file:
         writer.write(file, sheet_data)
     logger.info(f'make {palette_png_file_path}')
