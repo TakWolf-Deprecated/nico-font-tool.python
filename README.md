@@ -1,3 +1,9 @@
-# Nico Font Tool
+# NICO Font tool - Python
 
-为游戏引擎 [NICO](https://github.com/ftsf/nico) 编写的字体生成工具。
+A tool for converting opentype fonts to [NICO Game Framework](https://github.com/ftsf/nico) format fonts.
+
+This is the Python version. The Nim version see: [nico-font-tool](https://github.com/TakWolf/nico-font-tool).
+
+## License
+
+Under the [MIT license](LICENSE).
