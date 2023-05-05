@@ -1,10 +1,11 @@
 import logging
-import math
 import os
 
 import png
-from PIL import ImageFont, Image, ImageDraw
-from fontTools.ttLib import TTFont
+
+from nico_font_tool.bdf import BdfRasterizer
+from nico_font_tool.font import FontRasterizer
+from nico_font_tool.opentype import OpenTypeRasterizer
 
 logger = logging.getLogger('nico-font-tool')
 
@@ -13,62 +14,70 @@ _glyph_data_solid = 1
 _glyph_data_border = 2
 
 
-def create_font_sheet(
-        font_size: int,
+def create_font(
+        font_file_path: str | bytes | os.PathLike[str] | os.PathLike[bytes],
         outputs_name: str,
         outputs_dir: str,
-        font_file_path: str,
+        font_size: int = None,
         glyph_offset_x: int = 0,
         glyph_offset_y: int = 0,
         glyph_adjust_width: int = 0,
         glyph_adjust_height: int = 0,
 ):
-    # 加载字体文件
-    font = TTFont(font_file_path)
-    image_font = ImageFont.truetype(font_file_path, font_size)
+    # 根据扩展名加载字体光栅器
+    font_rasterizer: FontRasterizer
+    font_ext = os.path.splitext(font_file_path)[1]
+    if font_ext == '.otf' or font_ext == '.ttf' or font_ext == '.woff' or font_ext == '.woff2':
+        if font_size is None:
+            raise Exception('OpenType need a font size')
+        font_rasterizer = OpenTypeRasterizer(
+            font_file_path,
+            font_size,
+            glyph_offset_x,
+            glyph_offset_y,
+            glyph_adjust_width,
+            glyph_adjust_height,
+        )
+    elif font_ext == '.bdf':
+        font_rasterizer = BdfRasterizer(
+            font_file_path,
+            glyph_offset_x,
+            glyph_offset_y,
+            glyph_adjust_width,
+            glyph_adjust_height,
+        )
+    else:
+        raise Exception(f'Font file type not supported: {font_ext}')
     logger.info(f'loaded font file: {font_file_path}')
 
-    # 计算字体参数
-    px_units = font['head'].unitsPerEm / font_size
-    line_height = math.ceil((font['hhea'].ascent - font['hhea'].descent) / px_units)
-    line_height += glyph_adjust_height
-
     # 图集对象，初始化左边界
-    sheet_data = [[_glyph_data_border] for _ in range(line_height)]
+    sheet_data = [[_glyph_data_border] for _ in range(font_rasterizer.adjusted_line_height)]
     sheet_width = 1
 
     # 字母表
     alphabet = []
 
     # 遍历字体全部字符
-    for code_point, glyph_name in font.getBestCmap().items():
+    for code_point in font_rasterizer.get_code_point_sequence():
         c = chr(code_point)
         if not c.isprintable():
             continue
 
-        # 获取字符宽度
-        advance_width = math.ceil(font['hmtx'].metrics[glyph_name][0] / px_units)
-        if advance_width <= 0:
-            continue
-        advance_width += glyph_adjust_width
-        if advance_width <= 0:
-            continue
-
         # 栅格化
-        glyph_image = Image.new('RGBA', (advance_width, line_height), (0, 0, 0, 0))
-        ImageDraw.Draw(glyph_image).text((glyph_offset_x, glyph_offset_y), c, fill=(0, 0, 0), font=image_font)
-        logger.info(f'rasterize char: {code_point} - {c} - {glyph_image.width} - {glyph_image.height}')
+        glyph_data, adjusted_advance_width = font_rasterizer.rasterize_glyph(code_point)
+        if glyph_data is None:
+            continue
+        logger.info(f'rasterize glyph: {code_point} - {c} - {adjusted_advance_width}')
 
-        # 二值化字形，合并到图集
-        for y in range(line_height):
-            for x in range(advance_width):
-                alpha = glyph_image.getpixel((x, y))[3]
-                if alpha > 127:
+        # 合并到图集
+        for y in range(font_rasterizer.adjusted_line_height):
+            for x in range(adjusted_advance_width):
+                if glyph_data[y][x] > 0:
                     sheet_data[y].append(_glyph_data_solid)
                 else:
                     sheet_data[y].append(_glyph_data_transparent)
             sheet_data[y].append(_glyph_data_border)
-        sheet_width += advance_width + 1
+        sheet_width += adjusted_advance_width + 1
 
         # 添加到字母表
         alphabet.append(c)
