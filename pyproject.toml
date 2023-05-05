@@ -1,0 +1,37 @@
+[project]
+name = "nico-font-tool"
+version = "0.0.0"
+description = "A tool for converting fonts to NICO Game Framework format fonts."
+readme = "README.md"
+license = { text = "MIT License" }
+requires-python = ">=3.10"
+authors = [
+    { name = "TakWolf" },
+]
+maintainers = [
+    { name = "TakWolf" },
+]
+keywords = ["nico", "game-engine", "font"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "fonttools==4.39.3",
+    "Brotli==1.0.9",
+    "bdffont==0.0.4",
+    "Pillow==9.5.0",
+    "pypng==0.20220715.0",
+]
+
+[project.urls]
+homepage = "https://github.com/TakWolf/nico-font-tool.python"
+source = "https://github.com/TakWolf/nico-font-tool.python"
+issues = "https://github.com/TakWolf/nico-font-tool.python/issues"
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "src",
+]
