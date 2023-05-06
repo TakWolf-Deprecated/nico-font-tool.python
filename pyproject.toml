@@ -21,7 +21,7 @@ classifiers = [
 dependencies = [
     "fonttools==4.39.3",
     "Brotli==1.0.9",
-    "bdffont==0.0.5",
+    "bdffont==0.0.6",
     "Pillow==9.5.0",
     "pypng==0.20220715.0",
 ]
