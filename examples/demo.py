@@ -14,7 +14,6 @@ def main():
         outputs_dir=outputs_dir,
         font_size=8,
         glyph_adjust_width=-1,
-        glyph_adjust_height=-1,
     )
     nico_font_tool.create_font(
         font_file_path=os.path.join(fonts_dir, 'fusion-pixel-monospaced', 'fusion-pixel-monospaced.otf'),
@@ -35,6 +34,18 @@ def main():
         glyph_adjust_height=-1,
     )
     nico_font_tool.create_font(
+        font_file_path=os.path.join(fonts_dir, 'galmuri', 'Galmuri9.ttf'),
+        outputs_name='galmuri9',
+        outputs_dir=outputs_dir,
+        font_size=10,
+        glyph_adjust_width=-1,
+    )
+    nico_font_tool.create_font(
+        font_file_path=os.path.join(fonts_dir, 'galmuri', 'Galmuri9.bdf'),
+        outputs_name='galmuri9-bdf',
+        outputs_dir=outputs_dir,
+    )
+    nico_font_tool.create_font(
         font_file_path=os.path.join(fonts_dir, 'unifont', 'unifont-15.0.01.ttf'),
         outputs_name='unifont',
         outputs_dir=outputs_dir,
@@ -45,7 +56,6 @@ def main():
         font_file_path=os.path.join(fonts_dir, 'unifont', 'unifont-15.0.01.bdf'),
         outputs_name='unifont-bdf',
         outputs_dir=outputs_dir,
-        font_size=16,
         glyph_adjust_width=-1,
     )
     nico_font_tool.create_font(
