@@ -39,7 +39,7 @@ class BdfRasterizer(FontRasterizer):
 
     def rasterize_glyph(self, code_point: int) -> tuple[list[list[int]] | None, int | None]:
         glyph = self.font.code_point_to_glyph[code_point]
-        advance_width = glyph.bounding_box_width
+        advance_width = glyph.device_width_x
         if advance_width <= 0:
             return None, None
         adjusted_advance_width = advance_width + self.glyph_adjust_width

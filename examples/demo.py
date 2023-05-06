@@ -44,6 +44,7 @@ def main():
         font_file_path=os.path.join(fonts_dir, 'galmuri', 'Galmuri9.bdf'),
         outputs_name='galmuri9-bdf',
         outputs_dir=outputs_dir,
+        glyph_adjust_width=-1,
     )
     nico_font_tool.create_font(
         font_file_path=os.path.join(fonts_dir, 'unifont', 'unifont-15.0.01.ttf'),
