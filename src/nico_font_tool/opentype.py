@@ -28,7 +28,7 @@ class OpenTypeRasterizer(FontRasterizer):
 
         self.px_units = self.font['head'].unitsPerEm / font_size
         ascent = math.ceil(self.font['hhea'].ascent / self.px_units)
-        descent = math.ceil(self.font['hhea'].descent / self.px_units)
+        descent = math.floor(self.font['hhea'].descent / self.px_units)
 
         super().__init__(
             ascent,
