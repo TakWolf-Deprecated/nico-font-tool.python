@@ -54,7 +54,12 @@ class OpenTypeRasterizer(FontRasterizer):
             return None, None
 
         glyph_image = Image.new('RGBA', (adjusted_advance_width, self.adjusted_line_height), (0, 0, 0, 0))
-        ImageDraw.Draw(glyph_image).text((self.glyph_offset_x, self.glyph_offset_y), chr(code_point), fill=(0, 0, 0), font=self.image_font)
+        ImageDraw.Draw(glyph_image).text(
+            xy=(self.glyph_offset_x, self.glyph_offset_y),
+            text=chr(code_point),
+            fill=(0, 0, 0),
+            font=self.image_font,
+        )
 
         glyph_data = []
         for y in range(self.adjusted_line_height):
