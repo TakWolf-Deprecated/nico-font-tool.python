@@ -27,14 +27,16 @@ class OpenTypeRasterizer(FontRasterizer):
         self.image_font = ImageFont.truetype(font_file_path, font_size)
 
         self.px_units = self.font['head'].unitsPerEm / font_size
-        line_height = math.ceil((self.font['hhea'].ascent - self.font['hhea'].descent) / self.px_units)
+        ascent = math.ceil(self.font['hhea'].ascent / self.px_units)
+        descent = math.ceil(self.font['hhea'].descent / self.px_units)
 
         super().__init__(
-            line_height=line_height,
-            glyph_offset_x=glyph_offset_x,
-            glyph_offset_y=glyph_offset_y,
-            glyph_adjust_width=glyph_adjust_width,
-            glyph_adjust_height=glyph_adjust_height,
+            ascent,
+            descent,
+            glyph_offset_x,
+            glyph_offset_y,
+            glyph_adjust_width,
+            glyph_adjust_height,
         )
 
     def get_code_point_sequence(self) -> list[int]:

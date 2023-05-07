@@ -19,17 +19,23 @@ class BdfRasterizer(FontRasterizer):
     ):
         self.font = bdffont.load_bdf(font_file_path)
 
-        if 'FONT_ASCENT' in self.font.properties and 'FONT_DESCENT' in self.font.properties:
-            line_height = self.font.properties.font_ascent + self.font.properties.font_descent
+        if 'FONT_ASCENT' in self.font.properties:
+            ascent = self.font.properties.font_ascent
         else:
-            line_height = self.font.bounding_box_height
+            ascent = self.font.bounding_box_height + self.font.bounding_box_offset_y
+
+        if 'FONT_DESCENT' in self.font.properties:
+            descent = -self.font.properties.font_descent
+        else:
+            descent = self.font.bounding_box_offset_y
 
         super().__init__(
-            line_height=line_height,
-            glyph_offset_x=glyph_offset_x,
-            glyph_offset_y=glyph_offset_y,
-            glyph_adjust_width=glyph_adjust_width,
-            glyph_adjust_height=glyph_adjust_height,
+            ascent,
+            descent,
+            glyph_offset_x,
+            glyph_offset_y,
+            glyph_adjust_width,
+            glyph_adjust_height,
         )
 
     def get_code_point_sequence(self) -> list[int]:
