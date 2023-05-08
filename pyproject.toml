@@ -31,6 +31,9 @@ homepage = "https://github.com/TakWolf/nico-font-tool.python"
 source = "https://github.com/TakWolf/nico-font-tool.python"
 issues = "https://github.com/TakWolf/nico-font-tool.python/issues"
 
+[project.scripts]
+nicofont = "nico_font_tool.nicofont:main"
+
 [tool.pytest.ini_options]
 pythonpath = [
     "src",
