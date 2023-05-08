@@ -14,16 +14,14 @@ _glyph_data_solid = 1
 _glyph_data_border = 2
 
 
-def create_font(
+def create_sheet(
         font_file_path: str | bytes | os.PathLike[str] | os.PathLike[bytes],
-        outputs_name: str,
-        outputs_dir: str,
         font_size: int = None,
         glyph_offset_x: int = 0,
         glyph_offset_y: int = 0,
         glyph_adjust_width: int = 0,
         glyph_adjust_height: int = 0,
-):
+) -> tuple[list[list[int]], list[str]]:
     # 根据扩展名加载字体光栅器
     font_rasterizer: FontRasterizer
     font_ext = os.path.splitext(font_file_path)[1]
@@ -52,7 +50,6 @@ def create_font(
 
     # 图集对象，初始化左边界
     sheet_data = [[_glyph_data_border] for _ in range(font_rasterizer.adjusted_line_height)]
-    sheet_width = 1
 
     # 字母表
     alphabet = []
@@ -77,40 +74,31 @@ def create_font(
                 else:
                     sheet_data[y].append(_glyph_data_transparent)
             sheet_data[y].append(_glyph_data_border)
-        sheet_width += adjusted_advance_width + 1
 
         # 添加到字母表
         alphabet.append(c)
 
-    # 图集底部添加 1 像素边界
-    sheet_data.append([_glyph_data_border for _ in range(sheet_width)])
+    return sheet_data, alphabet
 
-    # 创建 palette 输出文件夹
-    outputs_palette_dir = os.path.join(outputs_dir, 'palette')
-    if not os.path.exists(outputs_palette_dir):
-        os.makedirs(outputs_palette_dir)
 
-    # 写入 palette .png 图集
-    palette_png_file_path = os.path.join(outputs_palette_dir, f'{outputs_name}.png')
+def save_palette_png(
+        sheet_data: list[list[int]],
+        outputs_dir: str | bytes | os.PathLike[str] | os.PathLike[bytes],
+        outputs_name: str,
+):
     palette = [(255, 255, 255), (0, 0, 0), (255, 0, 255)]
-    writer = png.Writer(sheet_width, len(sheet_data), palette=palette)
-    with open(palette_png_file_path, 'wb') as file:
+    writer = png.Writer(len(sheet_data[0]), len(sheet_data), palette=palette)
+    png_file_path = os.path.join(outputs_dir, f'{outputs_name}.png')
+    with open(png_file_path, 'wb') as file:
         writer.write(file, sheet_data)
-    logger.info(f'make {palette_png_file_path}')
+    logger.info(f'make {png_file_path}')
 
-    # 写入 palette .dat 字母表
-    palette_dat_file_path = os.path.join(outputs_palette_dir, f'{outputs_name}.png.dat')
-    with open(palette_dat_file_path, 'w', encoding='utf-8') as file:
-        file.write(''.join(alphabet))
-    logger.info(f'make {palette_dat_file_path}')
 
-    # 创建 rgba 输出文件夹
-    outputs_rgba_dir = os.path.join(outputs_dir, 'rgba')
-    if not os.path.exists(outputs_rgba_dir):
-        os.makedirs(outputs_rgba_dir)
-
-    # 写入 rgba .png 图集
-    rgba_png_file_path = os.path.join(outputs_rgba_dir, f'{outputs_name}.png')
+def save_rgba_png(
+        sheet_data: list[list[int]],
+        outputs_dir: str | bytes | os.PathLike[str] | os.PathLike[bytes],
+        outputs_name: str,
+):
     rgba_bitmap = []
     for sheet_data_row in sheet_data:
         rgba_bitmap_row = []
@@ -132,11 +120,17 @@ def create_font(
                 rgba_bitmap_row.append(255)
         rgba_bitmap.append(rgba_bitmap_row)
     image = png.from_array(rgba_bitmap, 'RGBA')
-    image.save(rgba_png_file_path)
-    logger.info(f'make {rgba_png_file_path}')
+    png_file_path = os.path.join(outputs_dir, f'{outputs_name}.png')
+    image.save(png_file_path)
+    logger.info(f'make {png_file_path}')
 
-    # 写入 rgba .dat 字母表
-    rgba_dat_file_path = os.path.join(outputs_rgba_dir, f'{outputs_name}.png.dat')
-    with open(rgba_dat_file_path, 'w', encoding='utf-8') as file:
+
+def save_dat_file(
+        alphabet: list[str],
+        outputs_dir: str | bytes | os.PathLike[str] | os.PathLike[bytes],
+        outputs_name: str,
+):
+    dat_file_path = os.path.join(outputs_dir, f'{outputs_name}.png.dat')
+    with open(dat_file_path, 'w', encoding='utf-8') as file:
         file.write(''.join(alphabet))
-    logger.info(f'make {rgba_dat_file_path}')
+    logger.info(f'make {dat_file_path}')
