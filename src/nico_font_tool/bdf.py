@@ -1,14 +1,11 @@
 import os
 
 import bdffont
-from bdffont import BdfFont
 
 from nico_font_tool.font import FontRasterizer
 
 
 class BdfRasterizer(FontRasterizer):
-    font: BdfFont
-
     def __init__(
             self,
             font_file_path: str | bytes | os.PathLike[str] | os.PathLike[bytes],

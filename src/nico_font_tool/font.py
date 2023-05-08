@@ -1,12 +1,5 @@
 
 class FontRasterizer:
-    ascent: int
-    descent: int
-    glyph_offset_x: int
-    glyph_offset_y: int
-    glyph_adjust_width: int
-    glyph_adjust_height: int
-
     def __init__(
             self,
             ascent: int,

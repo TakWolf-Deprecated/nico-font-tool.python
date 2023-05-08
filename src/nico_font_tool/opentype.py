@@ -2,18 +2,12 @@ import math
 import os
 
 from PIL import ImageFont, Image, ImageDraw
-from PIL.ImageFont import FreeTypeFont
 from fontTools.ttLib import TTFont
 
 from nico_font_tool.font import FontRasterizer
 
 
 class OpenTypeRasterizer(FontRasterizer):
-    font: TTFont
-    image_font: FreeTypeFont
-
-    px_units: float
-
     def __init__(
             self,
             font_file_path: str | bytes | os.PathLike[str] | os.PathLike[bytes],
