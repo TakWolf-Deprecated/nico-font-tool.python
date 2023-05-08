@@ -16,14 +16,11 @@ class BdfRasterizer(FontRasterizer):
     ):
         self.font = bdffont.load_bdf(font_file_path)
 
-        if 'FONT_ASCENT' in self.font.properties:
-            ascent = self.font.properties.font_ascent
-        else:
+        ascent = self.font.properties.font_ascent
+        if ascent is None:
             ascent = self.font.bounding_box_height + self.font.bounding_box_offset_y
-
-        if 'FONT_DESCENT' in self.font.properties:
-            descent = -self.font.properties.font_descent
-        else:
+        descent = -self.font.properties.font_descent
+        if descent is None:
             descent = self.font.bounding_box_offset_y
 
         super().__init__(
@@ -41,7 +38,7 @@ class BdfRasterizer(FontRasterizer):
         return sequence
 
     def rasterize_glyph(self, code_point: int) -> tuple[list[list[int]] | None, int | None]:
-        glyph = self.font.code_point_to_glyph[code_point]
+        glyph = self.font.get_glyph(code_point)
         advance_width = glyph.device_width_x
         if advance_width <= 0:
             return None, None
@@ -49,20 +46,37 @@ class BdfRasterizer(FontRasterizer):
         if adjusted_advance_width <= 0:
             return None, None
 
-        glyph_data = []
-        for y in range(self.adjusted_line_height):
-            glyph_data_row = []
-            for x in range(adjusted_advance_width):
-                x -= self.glyph_offset_x
-                y -= self.glyph_offset_y
-                if 0 <= y < len(glyph.bitmap):
-                    bitmap_row = glyph.bitmap[y]
-                    if 0 <= x < len(bitmap_row):
-                        glyph_data_row.append(bitmap_row[x])
-                    else:
-                        glyph_data_row.append(0)
-                else:
-                    glyph_data_row.append(0)
-            glyph_data.append(glyph_data_row)
+        glyph_data = [[color for color in bitmap_row] for bitmap_row in glyph.bitmap]
+        # Bottom
+        append_bottom = glyph.bounding_box_offset_y - self.descent + self.glyph_adjust_height - self.glyph_offset_y
+        while append_bottom > 0:
+            append_bottom -= 1
+            glyph_data.append([])
+        while append_bottom < 0:
+            append_bottom += 1
+            if len(glyph_data) > 0:
+                glyph_data.pop()
+        # Top
+        while len(glyph_data) < self.adjusted_line_height:
+            glyph_data.insert(0, [])
+        while len(glyph_data) > self.adjusted_line_height:
+            glyph_data.pop(0)
+        # Left
+        append_left = glyph.bounding_box_offset_x + self.glyph_offset_x
+        while append_left > 0:
+            append_left -= 1
+            for glyph_data_row in glyph_data:
+                glyph_data_row.insert(0, 0)
+        while append_left < 0:
+            append_left += 1
+            for glyph_data_row in glyph_data:
+                if len(glyph_data_row) > 0:
+                    glyph_data_row.pop(0)
+        # Right
+        for glyph_data_row in glyph_data:
+            while len(glyph_data_row) < adjusted_advance_width:
+                glyph_data_row.append(0)
+            while len(glyph_data_row) > adjusted_advance_width:
+                glyph_data_row.pop()
 
         return glyph_data, adjusted_advance_width
