@@ -43,6 +43,14 @@ nico_font_tool.save_rgba_png(sheet_data, outputs_dir, outputs_name)
 nico_font_tool.save_dat_file(alphabet, outputs_dir, outputs_name)
 ```
 
+## Dependencies
+
+- [FontTools](https://github.com/fonttools/fonttools)
+- [Brotli](https://github.com/google/brotli)
+- [BdfFont](https://github.com/TakWolf/bdffont)
+- [Pillow](https://github.com/python-pillow/Pillow)
+- [PyPNG](https://gitlab.com/drj11/pypng)
+
 ## License
 
 Under the [MIT license](LICENSE).
