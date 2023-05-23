@@ -24,7 +24,7 @@ nicofont your/font/file/path.ttf outputs/dir outputs_name --font_size 8
 
 ### Scripts
 
-See: [Demo](examples/demo.py)
+See: [demo](examples/demo.py)
 
 ```python
 import nico_font_tool
