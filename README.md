@@ -19,7 +19,7 @@ pip install nico-font-tool
 Use `nicofont -h` to learn more.
 
 ```commandline
-nicofont ./assets/fonts/quan/quan.ttf ./build/quan quan --font_size 8 -gaw -1
+nicofont your/font/file/path.ttf outputs/dir outputs_name --font_size 8
 ```
 
 ### Scripts
@@ -27,20 +27,18 @@ nicofont ./assets/fonts/quan/quan.ttf ./build/quan quan --font_size 8 -gaw -1
 See: [Demo](examples/demo.py)
 
 ```python
+import nico_font_tool
+
 sheet_data, alphabet = nico_font_tool.create_sheet(
-    font_file_path,
-    font_size,
-    glyph_offset_x,
-    glyph_offset_y,
-    glyph_adjust_width,
-    glyph_adjust_height,
+    font_file_path='your/font/file/path.ttf', 
+    font_size=8,
 )
 
-nico_font_tool.save_palette_png(sheet_data, outputs_dir, outputs_name)
-nico_font_tool.save_dat_file(alphabet, outputs_dir, outputs_name)
+nico_font_tool.save_palette_png(sheet_data, 'outputs/palette/dir', 'outputs_name')
+nico_font_tool.save_dat_file(alphabet, 'outputs/palette/dir', 'outputs_name')
     
-nico_font_tool.save_rgba_png(sheet_data, outputs_dir, outputs_name)
-nico_font_tool.save_dat_file(alphabet, outputs_dir, outputs_name)
+nico_font_tool.save_rgba_png(sheet_data, 'outputs/rgba/dir', 'outputs_name')
+nico_font_tool.save_dat_file(alphabet, 'outputs/rgba/dir', 'outputs_name')
 ```
 
 ## Dependencies
