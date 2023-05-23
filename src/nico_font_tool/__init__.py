@@ -45,7 +45,7 @@ def create_sheet(
             glyph_adjust_height,
         )
     else:
-        raise Exception(f'Font file type not supported: {font_ext}')
+        raise Exception(f'font file type not supported: {font_ext}')
     logger.info(f'loaded font file: {font_file_path}')
 
     # 图集对象，初始化左边界

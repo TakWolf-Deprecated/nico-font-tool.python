@@ -19,7 +19,7 @@ def execute(args: argparse.Namespace):
     png_type = args.png_type = args.png_type
 
     if png_type != 'palette' and png_type != 'rgba':
-        raise Exception(f"Unsupported png type: '{png_type}'")
+        raise Exception(f"unsupported png type: '{png_type}'")
 
     if not os.path.exists(outputs_dir):
         os.makedirs(outputs_dir)
