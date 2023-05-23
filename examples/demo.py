@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 
 import nico_font_tool
 from examples import fonts_dir, outputs_dir
@@ -40,6 +41,10 @@ def convert_font(
 
 
 def main():
+    if os.path.exists(outputs_dir):
+        shutil.rmtree(outputs_dir)
+    os.makedirs(outputs_dir)
+
     convert_font(
         font_file_name='quan/quan.ttf',
         outputs_name='quan',
