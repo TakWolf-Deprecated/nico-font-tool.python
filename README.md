@@ -19,7 +19,7 @@ pip install nico-font-tool
 Use `nicofont -h` to learn more.
 
 ```commandline
-nicofont your/font/file/path.ttf outputs/dir outputs_name --font_size 8
+nicofont assets/fonts/quan/quan.ttf build/demo quan --font_size 8
 ```
 
 ### Scripts
