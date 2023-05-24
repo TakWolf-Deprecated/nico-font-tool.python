@@ -54,7 +54,7 @@ def main():
     parser.add_argument('-goy', '--glyph_offset_y', type=int, default=0, help='Glyph offset y.')
     parser.add_argument('-gaw', '--glyph_adjust_width', type=int, default=0, help='Glyph adjust width.')
     parser.add_argument('-gah', '--glyph_adjust_height', type=int, default=0, help='Glyph adjust height.')
-    parser.add_argument('-pt', '--png_type', type=str, default='palette', help="Png sheet color type, can be 'palette' or 'rgba', default is 'palette'")
+    parser.add_argument('-m', '--mode', type=str, default='palette', help="Png sheet color type, can be 'palette' or 'rgba', default is 'palette'.")
     execute(parser.parse_args())
 
 
