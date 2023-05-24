@@ -16,10 +16,10 @@ def execute(args: argparse.Namespace):
     glyph_offset_y = args.glyph_offset_y
     glyph_adjust_width = args.glyph_adjust_width
     glyph_adjust_height = args.glyph_adjust_height
-    png_type = args.png_type = args.png_type
+    mode = args.mode
 
-    if png_type != 'palette' and png_type != 'rgba':
-        raise Exception(f"unsupported png type: '{png_type}'")
+    if mode != 'palette' and mode != 'rgba':
+        raise Exception(f"unsupported png mode: '{mode}'")
 
     if not os.path.exists(outputs_dir):
         os.makedirs(outputs_dir)
@@ -33,10 +33,10 @@ def execute(args: argparse.Namespace):
         glyph_adjust_height,
     )
 
-    if png_type == 'palette':
+    if mode == 'palette':
         nico_font_tool.save_palette_png(sheet_data, outputs_dir, outputs_name)
         nico_font_tool.save_dat_file(alphabet, outputs_dir, outputs_name)
-    elif png_type == 'rgba':
+    elif mode == 'rgba':
         nico_font_tool.save_rgba_png(sheet_data, outputs_dir, outputs_name)
         nico_font_tool.save_dat_file(alphabet, outputs_dir, outputs_name)
 
@@ -54,7 +54,7 @@ def main():
     parser.add_argument('-goy', '--glyph_offset_y', type=int, default=0, help='Glyph offset y.')
     parser.add_argument('-gaw', '--glyph_adjust_width', type=int, default=0, help='Glyph adjust width.')
     parser.add_argument('-gah', '--glyph_adjust_height', type=int, default=0, help='Glyph adjust height.')
-    parser.add_argument('-m', '--mode', type=str, default='palette', help="Png sheet color type, can be 'palette' or 'rgba', default is 'palette'.")
+    parser.add_argument('-m', '--mode', type=str, default='palette', help="Png sheet color mode, can be 'palette' or 'rgba', default is 'palette'.")
     execute(parser.parse_args())
 
 
