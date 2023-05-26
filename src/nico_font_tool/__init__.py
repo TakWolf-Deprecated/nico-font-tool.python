@@ -45,8 +45,8 @@ def create_sheet(
             glyph_adjust_height,
         )
     else:
-        raise Exception(f'font file type not supported: {font_ext}')
-    logger.info(f'loaded font file: {font_file_path}')
+        raise Exception(f'Font file type not supported: {font_ext}')
+    logger.info(f"Loaded font file: '{font_file_path}'")
 
     # 图集对象，初始化左边界
     sheet_data = [[_glyph_data_border] for _ in range(font_rasterizer.adjusted_line_height)]
@@ -64,7 +64,7 @@ def create_sheet(
         glyph_data, adjusted_advance_width = font_rasterizer.rasterize_glyph(code_point)
         if glyph_data is None:
             continue
-        logger.info(f'rasterize glyph: {code_point} - {c} - {adjusted_advance_width}')
+        logger.info(f'Rasterize glyph: {code_point} - {c} - {adjusted_advance_width}')
 
         # 合并到图集
         for y in range(font_rasterizer.adjusted_line_height):
@@ -91,7 +91,7 @@ def save_palette_png(
     png_file_path = os.path.join(outputs_dir, f'{outputs_name}.png')
     with open(png_file_path, 'wb') as file:
         writer.write(file, sheet_data)
-    logger.info(f'make {png_file_path}')
+    logger.info(f"Make: '{png_file_path}'")
 
 
 def save_rgba_png(
@@ -122,7 +122,7 @@ def save_rgba_png(
     image = png.from_array(rgba_bitmap, 'RGBA')
     png_file_path = os.path.join(outputs_dir, f'{outputs_name}.png')
     image.save(png_file_path)
-    logger.info(f'make {png_file_path}')
+    logger.info(f"Make: '{png_file_path}'")
 
 
 def save_dat_file(
@@ -133,4 +133,4 @@ def save_dat_file(
     dat_file_path = os.path.join(outputs_dir, f'{outputs_name}.png.dat')
     with open(dat_file_path, 'w', encoding='utf-8') as file:
         file.write(''.join(alphabet))
-    logger.info(f'make {dat_file_path}')
+    logger.info(f"Make: '{dat_file_path}'")

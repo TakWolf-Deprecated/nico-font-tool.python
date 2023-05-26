@@ -19,7 +19,7 @@ def execute(args: argparse.Namespace):
     mode = args.mode
 
     if mode != 'palette' and mode != 'rgba':
-        raise Exception(f"unsupported png mode: '{mode}'")
+        raise Exception(f"Unsupported png mode: '{mode}'")
 
     if not os.path.exists(outputs_dir):
         os.makedirs(outputs_dir)
