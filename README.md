@@ -1,5 +1,6 @@
 # NICO Font Tool - Python
 
+[![Python](https://img.shields.io/badge/python-3.11-brightgreen)](https://www.python.org)
 [![PyPI](https://img.shields.io/pypi/v/nico-font-tool)](https://pypi.org/project/nico-font-tool/)
 
 A tool for converting fonts to [NICO Game Framework](https://github.com/ftsf/nico) format fonts.
