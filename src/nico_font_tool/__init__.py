@@ -22,7 +22,6 @@ def create_sheet(
         glyph_adjust_width: int = 0,
         glyph_adjust_height: int = 0,
 ) -> tuple[list[list[int]], list[str]]:
-    # 根据扩展名加载字体光栅器
     font_rasterizer: FontRasterizer
     font_ext = os.path.splitext(font_file_path)[1]
     if font_ext == '.otf' or font_ext == '.ttf' or font_ext == '.woff' or font_ext == '.woff2':
@@ -48,25 +47,19 @@ def create_sheet(
         raise Exception(f'Font file type not supported: {font_ext}')
     logger.info(f"Loaded font file: '{font_file_path}'")
 
-    # 图集对象，初始化左边界
     sheet_data = [[_glyph_data_border] for _ in range(font_rasterizer.adjusted_line_height)]
-
-    # 字母表
     alphabet = []
 
-    # 遍历字体全部字符
     for code_point in font_rasterizer.get_code_point_sequence():
         c = chr(code_point)
         if not c.isprintable():
             continue
 
-        # 栅格化
         glyph_data, adjusted_advance_width = font_rasterizer.rasterize_glyph(code_point)
         if glyph_data is None:
             continue
         logger.info(f'Rasterize glyph: {code_point} - {c} - {adjusted_advance_width}')
 
-        # 合并到图集
         for y in range(font_rasterizer.adjusted_line_height):
             for x in range(adjusted_advance_width):
                 if glyph_data[y][x] > 0:
@@ -75,7 +68,6 @@ def create_sheet(
                     sheet_data[y].append(_glyph_data_transparent)
             sheet_data[y].append(_glyph_data_border)
 
-        # 添加到字母表
         alphabet.append(c)
 
     return sheet_data, alphabet
