@@ -1,6 +1,6 @@
 fonttools==4.39.4
 Brotli==1.0.9
-bdffont==0.0.8
+bdffont==0.0.9
 Pillow==9.5.0
 pypng==0.20220715.0
 
