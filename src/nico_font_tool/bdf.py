@@ -1,6 +1,6 @@
 import os
 
-import bdffont
+from bdffont import BdfFont
 
 from nico_font_tool.font import FontRasterizer
 
@@ -14,7 +14,7 @@ class BdfRasterizer(FontRasterizer):
             glyph_adjust_width: int = 0,
             glyph_adjust_height: int = 0,
     ):
-        self.font = bdffont.load_bdf(font_file_path)
+        self.font = BdfFont.load(font_file_path)
 
         ascent = self.font.properties.font_ascent
         if ascent is None:
