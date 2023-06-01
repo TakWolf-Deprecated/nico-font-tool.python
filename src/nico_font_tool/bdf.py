@@ -17,11 +17,22 @@ class BdfRasterizer(FontRasterizer):
         self.font = BdfFont.load(font_file_path)
 
         ascent = self.font.properties.font_ascent
-        if ascent is None:
-            ascent = self.font.bounding_box_height + self.font.bounding_box_offset_y
         descent = -self.font.properties.font_descent
-        if descent is None:
-            descent = self.font.bounding_box_offset_y
+        if ascent is None or descent is None:
+            max_top = 0
+            min_bottom = 0
+            for glyph in self.font.code_point_to_glyph.values():
+                (_, bounding_box_height), (_, bounding_box_offset_y), _ = glyph.get_8bit_aligned_bitmap(optimize_bitmap=True)
+                top = bounding_box_height + bounding_box_offset_y
+                if top > max_top:
+                    max_top = top
+                bottom = bounding_box_offset_y
+                if bottom < min_bottom:
+                    min_bottom = bottom
+            if ascent is None:
+                ascent = max_top
+            if descent is None:
+                descent = min_bottom
 
         super().__init__(
             ascent,
