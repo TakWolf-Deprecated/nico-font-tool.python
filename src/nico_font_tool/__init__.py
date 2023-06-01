@@ -9,9 +9,9 @@ from nico_font_tool.opentype import OpenTypeRasterizer
 
 logger = logging.getLogger('nico-font-tool')
 
-_glyph_data_transparent = 0
-_glyph_data_solid = 1
-_glyph_data_border = 2
+_GLYPH_DATA_TRANSPARENT = 0
+_GLYPH_DATA_SOLID = 1
+_GLYPH_DATA_BORDER = 2
 
 
 def create_sheet(
@@ -47,7 +47,7 @@ def create_sheet(
         raise Exception(f'Font file type not supported: {font_ext}')
     logger.info(f"Loaded font file: '{font_file_path}'")
 
-    sheet_data = [[_glyph_data_border] for _ in range(font_rasterizer.adjusted_line_height)]
+    sheet_data = [[_GLYPH_DATA_BORDER] for _ in range(font_rasterizer.adjusted_line_height)]
     alphabet = []
 
     for code_point in font_rasterizer.get_code_point_sequence():
@@ -63,10 +63,10 @@ def create_sheet(
         for y in range(font_rasterizer.adjusted_line_height):
             for x in range(adjusted_advance_width):
                 if glyph_data[y][x] > 0:
-                    sheet_data[y].append(_glyph_data_solid)
+                    sheet_data[y].append(_GLYPH_DATA_SOLID)
                 else:
-                    sheet_data[y].append(_glyph_data_transparent)
-            sheet_data[y].append(_glyph_data_border)
+                    sheet_data[y].append(_GLYPH_DATA_TRANSPARENT)
+            sheet_data[y].append(_GLYPH_DATA_BORDER)
 
         alphabet.append(c)
 
@@ -95,12 +95,12 @@ def save_rgba_png(
     for sheet_data_row in sheet_data:
         rgba_bitmap_row = []
         for color in sheet_data_row:
-            if color == _glyph_data_transparent:
+            if color == _GLYPH_DATA_TRANSPARENT:
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
-            elif color == _glyph_data_solid:
+            elif color == _GLYPH_DATA_SOLID:
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
                 rgba_bitmap_row.append(0)
