@@ -8,15 +8,15 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def execute(args: argparse.Namespace):
-    font_file_path = args.font_file_path
-    outputs_dir = args.outputs_dir
-    outputs_name = args.outputs_name
-    font_size = args.font_size
-    glyph_offset_x = args.glyph_offset_x
-    glyph_offset_y = args.glyph_offset_y
-    glyph_adjust_width = args.glyph_adjust_width
-    glyph_adjust_height = args.glyph_adjust_height
-    mode = args.mode
+    font_file_path: str = args.font_file_path
+    outputs_dir: str = args.outputs_dir
+    outputs_name: str = args.outputs_name
+    font_size: int | None = args.font_size
+    glyph_offset_x: int = args.glyph_offset_x
+    glyph_offset_y: int = args.glyph_offset_y
+    glyph_adjust_width: int = args.glyph_adjust_width
+    glyph_adjust_height: int = args.glyph_adjust_height
+    mode: str = args.mode
 
     if mode != 'palette' and mode != 'rgba':
         raise Exception(f"Unsupported png mode: '{mode}'")

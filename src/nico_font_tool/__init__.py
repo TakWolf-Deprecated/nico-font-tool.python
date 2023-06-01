@@ -76,7 +76,7 @@ def create_sheet(
 def save_palette_png(
         sheet_data: list[list[int]],
         outputs_dir: str | bytes | os.PathLike[str] | os.PathLike[bytes],
-        outputs_name: str,
+        outputs_name: str | bytes,
 ):
     palette = [(255, 255, 255), (0, 0, 0), (255, 0, 255)]
     writer = png.Writer(len(sheet_data[0]), len(sheet_data), palette=palette)
@@ -89,7 +89,7 @@ def save_palette_png(
 def save_rgba_png(
         sheet_data: list[list[int]],
         outputs_dir: str | bytes | os.PathLike[str] | os.PathLike[bytes],
-        outputs_name: str,
+        outputs_name: str | bytes,
 ):
     rgba_bitmap = []
     for sheet_data_row in sheet_data:
@@ -120,7 +120,7 @@ def save_rgba_png(
 def save_dat_file(
         alphabet: list[str],
         outputs_dir: str | bytes | os.PathLike[str] | os.PathLike[bytes],
-        outputs_name: str,
+        outputs_name: str | bytes,
 ):
     dat_file_path = os.path.join(outputs_dir, f'{outputs_name}.png.dat')
     with open(dat_file_path, 'w', encoding='utf-8') as file:
