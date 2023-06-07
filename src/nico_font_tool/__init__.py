@@ -45,7 +45,7 @@ def create_sheet(
         )
     else:
         raise Exception(f'Font file type not supported: {font_ext}')
-    logger.info(f"Loaded font file: '{font_file_path}'")
+    logger.info(f"Load font file: '{font_file_path}'")
 
     sheet_data = [[_GLYPH_DATA_BORDER] for _ in range(font_rasterizer.adjusted_line_height)]
     alphabet = []
