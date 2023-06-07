@@ -49,17 +49,7 @@ def create_sheet(
 
     sheet_data = [[_GLYPH_DATA_BORDER] for _ in range(font_rasterizer.adjusted_line_height)]
     alphabet = []
-
-    for code_point in font_rasterizer.get_code_point_sequence():
-        c = chr(code_point)
-        if not c.isprintable():
-            continue
-
-        glyph_data, adjusted_advance_width = font_rasterizer.rasterize_glyph(code_point)
-        if glyph_data is None:
-            continue
-        logger.info(f'Rasterize glyph: {code_point} - {c} - {adjusted_advance_width}')
-
+    for c, glyph_data, adjusted_advance_width in font_rasterizer.rasterize_glyphs_in_order():
         for y in range(font_rasterizer.adjusted_line_height):
             for x in range(adjusted_advance_width):
                 if glyph_data[y][x] > 0:
@@ -67,8 +57,8 @@ def create_sheet(
                 else:
                     sheet_data[y].append(_GLYPH_DATA_TRANSPARENT)
             sheet_data[y].append(_GLYPH_DATA_BORDER)
-
         alphabet.append(c)
+        logger.info(f'Rasterize glyph: {ord(c)} - {c} - {adjusted_advance_width}')
 
     return sheet_data, alphabet
 

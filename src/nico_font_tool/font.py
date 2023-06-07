@@ -1,3 +1,5 @@
+from typing import Iterator
+
 
 class FontRasterizer:
     def __init__(
@@ -24,8 +26,5 @@ class FontRasterizer:
     def adjusted_line_height(self) -> int:
         return self.line_height + self.glyph_adjust_height
 
-    def get_code_point_sequence(self) -> list[int]:
-        raise NotImplementedError()
-
-    def rasterize_glyph(self, code_point: int) -> tuple[list[list[int]] | None, int | None]:
+    def rasterize_glyphs_in_order(self) -> Iterator[tuple[str, list[list[int]], int]]:
         raise NotImplementedError()

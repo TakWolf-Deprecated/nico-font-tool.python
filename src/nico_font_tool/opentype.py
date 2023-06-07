@@ -1,5 +1,6 @@
 import math
 import os
+from typing import Iterator
 
 from PIL import ImageFont, Image, ImageDraw
 from fontTools.ttLib import TTFont
@@ -33,37 +34,38 @@ class OpenTypeRasterizer(FontRasterizer):
             glyph_adjust_height,
         )
 
-    def get_code_point_sequence(self) -> list[int]:
-        sequence = list(self.font.getBestCmap().keys())
-        sequence.sort()
-        return sequence
+    def rasterize_glyphs_in_order(self) -> Iterator[tuple[str, list[list[int]], int]]:
+        code_points = list(self.font.getBestCmap().keys())
+        code_points.sort()
+        for code_point in code_points:
+            c = chr(code_point)
+            if not c.isprintable():
+                continue
 
-    def rasterize_glyph(self, code_point: int) -> tuple[list[list[int]] | None, int | None]:
-        glyph_name = self.font.getBestCmap()[code_point]
-        advance_width = math.ceil(self.font['hmtx'].metrics[glyph_name][0] / self.px_units)
-        if advance_width <= 0:
-            return None, None
-        adjusted_advance_width = advance_width + self.glyph_adjust_width
-        if adjusted_advance_width <= 0:
-            return None, None
+            glyph_name = self.font.getBestCmap()[code_point]
+            advance_width = math.ceil(self.font['hmtx'].metrics[glyph_name][0] / self.px_units)
+            if advance_width <= 0:
+                continue
+            adjusted_advance_width = advance_width + self.glyph_adjust_width
+            if adjusted_advance_width <= 0:
+                continue
 
-        glyph_image = Image.new('RGBA', (adjusted_advance_width, self.adjusted_line_height), (0, 0, 0, 0))
-        ImageDraw.Draw(glyph_image).text(
-            xy=(self.glyph_offset_x, self.glyph_offset_y),
-            text=chr(code_point),
-            fill=(0, 0, 0),
-            font=self.image_font,
-        )
+            glyph_image = Image.new('RGBA', (adjusted_advance_width, self.adjusted_line_height), (0, 0, 0, 0))
+            ImageDraw.Draw(glyph_image).text(
+                xy=(self.glyph_offset_x, self.glyph_offset_y),
+                text=chr(code_point),
+                fill=(0, 0, 0),
+                font=self.image_font,
+            )
+            glyph_data = []
+            for y in range(self.adjusted_line_height):
+                glyph_data_row = []
+                for x in range(adjusted_advance_width):
+                    alpha = glyph_image.getpixel((x, y))[3]
+                    if alpha > 127:
+                        glyph_data_row.append(1)
+                    else:
+                        glyph_data_row.append(0)
+                glyph_data.append(glyph_data_row)
 
-        glyph_data = []
-        for y in range(self.adjusted_line_height):
-            glyph_data_row = []
-            for x in range(adjusted_advance_width):
-                alpha = glyph_image.getpixel((x, y))[3]
-                if alpha > 127:
-                    glyph_data_row.append(1)
-                else:
-                    glyph_data_row.append(0)
-            glyph_data.append(glyph_data_row)
-
-        return glyph_data, adjusted_advance_width
+            yield c, glyph_data, adjusted_advance_width
