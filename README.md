@@ -9,7 +9,7 @@ This is the Python version. The Nim version see: [nico-font-tool](https://github
 
 ## Installation
 
-```commandline
+```shell
 pip install nico-font-tool
 ```
 
@@ -19,7 +19,7 @@ pip install nico-font-tool
 
 Use `nicofont -h` to learn more.
 
-```commandline
+```shell
 nicofont assets/fonts/quan/quan.ttf build/demo quan --font_size 8
 ```
 
