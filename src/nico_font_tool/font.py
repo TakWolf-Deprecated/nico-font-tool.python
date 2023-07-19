@@ -1,7 +1,8 @@
+from abc import ABCMeta, abstractmethod
 from typing import Iterator
 
 
-class FontRasterizer:
+class FontRasterizer(metaclass=ABCMeta):
     def __init__(
             self,
             ascent: int,
@@ -26,5 +27,6 @@ class FontRasterizer:
     def adjusted_line_height(self) -> int:
         return self.line_height + self.glyph_adjust_height
 
+    @abstractmethod
     def rasterize_glyphs_in_order(self) -> Iterator[tuple[str, list[list[int]], int]]:
         raise NotImplementedError()
